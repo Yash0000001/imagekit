@@ -32,7 +32,7 @@ const videoSchema = new Schema<IVideo>(
             height: { type: Number, default: Video_Dimensions.height },
             width: { type: Number, default: Video_Dimensions.width },
             quality: { type: Number, min: 1, max: 100 },
-        }
+        } 
     },
     {
         timestamps: true,
