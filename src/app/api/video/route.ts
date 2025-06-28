@@ -15,7 +15,7 @@ export async function GET() {
         return NextResponse.json(videos, { status: 200 })
     } catch (error) {
         return NextResponse.json(
-            { error: "failed to fetch videos" },
+            { error: "failed to fetch videos", details: String(error) },
             { status: 500 }
         )
     }
@@ -54,12 +54,12 @@ export async function POST(request: NextRequest) {
         };
         const newVideo = await Video.create(videoData)
         return NextResponse.json(
-            { message: "Video uploaded successfully" },
+            { message: "Video uploaded successfully", newVideo },
             { status: 201 }
         )
     } catch (error) {
         return NextResponse.json(
-            { error: "Failed to create video" },
+            { error: "Failed to create video", details: String(error) },
             { status: 500 }
         )
     }

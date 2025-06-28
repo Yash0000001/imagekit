@@ -124,7 +124,7 @@ const LoginPage = () => {
                     </button>
                 </form>
                 <p className="text-white">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <Link href="/register" className="text-blue-400">
                         Register
                     </Link>
