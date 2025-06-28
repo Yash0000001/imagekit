@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+// import GitHubProvider from "next-auth/providers/github";
+// import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { dbConnect } from "./db";
 import User from "@/models/User.model";
@@ -9,12 +9,12 @@ import bcrypt from "bcryptjs";
 export const authOptions: NextAuthOptions = {
     providers: [
         // GitHubProvider({
-        //     clientId: process.env.GITHUB_ID,
-        //     clientSecret: process.env.GITHUB_SECRET
+        //     clientId: process.env.GITHUB_ID!,
+        //     clientSecret: process.env.GITHUB_SECRET!
         // }),
         // GoogleProvider({
-        //     clientId: process.env.GOOGLE_CLIENT_ID,
-        //     clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        //     clientId: process.env.GOOGLE_CLIENT_ID!,
+        //     clientSecret: process.env.GOOGLE_CLIENT_SECRET!
         // }),
         CredentialsProvider({
             // The name to display on the sign in form (e.g. "Sign in with...")

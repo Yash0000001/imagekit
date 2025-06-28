@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         const session = await getServerSession(authOptions)
         if (!session) {
             return NextResponse.json(
-                { message: "UNauthorized upload" },
+                { message: "Unauthorized upload" },
                 { status: 401 }
             );
         }
