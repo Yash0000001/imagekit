@@ -23,22 +23,25 @@ export interface IVideo {
 
 const videoSchema = new Schema<IVideo>(
     {
-        title: { type: String, required: true, unique: true },
-        description: { type: String, required: true, unique: true },
+        title: { type: String, required: true },
+        description: { type: String, required: true },
         videoUrl: { type: String, required: true },
         thumbnailUrl: { type: String, required: true },
-        controls: { type: Boolean, required: true },
+        controls: { type: Boolean, required: true, default: true },
         transformations: {
             height: { type: Number, default: Video_Dimensions.height },
             width: { type: Number, default: Video_Dimensions.width },
             quality: { type: Number, min: 1, max: 100 },
-        } 
+        },
     },
     {
         timestamps: true,
     }
 );
 
+// Optional index for text search
+videoSchema.index({ title: "text", description: "text" });
+
 const Video = models?.Video || model<IVideo>("Video", videoSchema);
 
-export default Video
+export default Video;

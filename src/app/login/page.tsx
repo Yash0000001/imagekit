@@ -1,10 +1,10 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
@@ -24,6 +24,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { push } = useRouter();
+    const { status } = useSession();
 
     const onSubmit = async (data: FormValues) => {
         if (loading) return;
@@ -55,8 +56,18 @@ const LoginPage = () => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (status == 'authenticated') {
+            push("/");
+        }
+    }, [status, push])
 
-    return (
+
+
+    return status === "loading" ? 
+    <div className="w-full h-[100vh] flex flex-col items-center justify-center bg-black">Loading...</div> : 
+    
+    (
         <div className="w-full h-[100vh] flex flex-col items-center justify-center bg-black">
             <div className="flex flex-col items-center justify-center border-2 border-white p-8 rounded-2xl w-full max-w-md gap-4">
                 {error && <p className="text-red-500 mb-4">{error}</p>}

@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         const videoData = {
             ...body,
             controls: body?.controls ?? true,
-            transformation: {
+            transformations: {
                 height: 1920,
                 width: 1080,
                 quality: body.transformations?.quality ?? 100

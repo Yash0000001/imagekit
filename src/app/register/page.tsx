@@ -1,9 +1,10 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
@@ -26,6 +27,7 @@ const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { push } = useRouter();
+    const { status } = useSession();
 
     const onSubmit = async (data: FormValues) => {
         if (loading) return;
@@ -67,109 +69,116 @@ const RegisterPage = () => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (status == 'authenticated') {
+            push("/");
+        }
+    }, [status])
+    
+    return status === "loading" ?
+        <div className="w-full h-[100vh] flex flex-col items-center justify-center bg-black">Loading...</div> :
+        (
+            <div className="w-full h-[100vh] flex flex-col items-center justify-center bg-black">
+                <div className="flex flex-col items-center justify-center border-2 border-white p-8 rounded-2xl w-full max-w-md gap-4">
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
 
-    return (
-        <div className="w-full h-[100vh] flex flex-col items-center justify-center bg-black">
-            <div className="flex flex-col items-center justify-center border-2 border-white p-8 rounded-2xl w-full max-w-md gap-4">
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-
-                <h1 className="text-4xl text-white mb-5">Register</h1>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="flex flex-col w-full items-center justify-center gap-2"
-                >
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        autoComplete="email"
-                        {...register('email', {
-                            required: 'Email is required',
-                            pattern: {
-                                value: /^\S+@\S+\.\S+$/,
-                                message: 'Invalid email format',
-                            },
-                        })}
-                        className="border px-3 py-2 rounded w-full mb-1 text-white bg-transparent"
-                    />
-                    {errors.email && (
-                        <p className="text-red-400 text-sm mb-2">{errors.email.message}</p>
-                    )}
-
-                    <div className='relative w-full mb-1'>
+                    <h1 className="text-4xl text-white mb-5">Register</h1>
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="flex flex-col w-full items-center justify-center gap-2"
+                    >
                         <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Password"
-                            autoComplete="new-password"
-                            {...register('password', {
-                                required: 'Password is required',
-                                minLength: {
-                                    value: 6,
-                                    message: 'Password must be at least 6 characters',
+                            type="email"
+                            placeholder="Email"
+                            autoComplete="email"
+                            {...register('email', {
+                                required: 'Email is required',
+                                pattern: {
+                                    value: /^\S+@\S+\.\S+$/,
+                                    message: 'Invalid email format',
                                 },
                             })}
                             className="border px-3 py-2 rounded w-full mb-1 text-white bg-transparent"
                         />
-                        {errors.password && (
-                            <p className="text-red-400 text-sm mb-2">{errors.password.message}</p>
+                        {errors.email && (
+                            <p className="text-red-400 text-sm mb-2">{errors.email.message}</p>
                         )}
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword((prev) => !prev)}
-                            className="absolute right-2 top-2 text-white"
-                        >
-                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                        </button>
-                    </div>
 
-                    <div className='relative w-full mb-1'>
-                        <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm Password"
-                            autoComplete="new-password"
-                            {...register('confirmPassword', {
-                                required: 'Confirm Password is required',
-                                validate: (val) =>
-                                    val === watch('password') || 'Passwords do not match',
-                            })}
-                            className="border px-3 py-2 rounded w-full mb-1 text-white bg-transparent"
-                        />
-                        {errors.confirmPassword && (
-                            <p className="text-red-400 text-sm mb-2">
-                                {errors.confirmPassword.message}
-                            </p>
-                        )}
-                        <button
-                            type="button"
-                            onClick={() => setShowConfirmPassword((prev) => !prev)}
-                            className="absolute right-2 top-2 text-white"
-                        >
-                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                        </button>
-                    </div>
+                        <div className='relative w-full mb-1'>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                autoComplete="new-password"
+                                {...register('password', {
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Password must be at least 6 characters',
+                                    },
+                                })}
+                                className="border px-3 py-2 rounded w-full mb-1 text-white bg-transparent"
+                            />
+                            {errors.password && (
+                                <p className="text-red-400 text-sm mb-2">{errors.password.message}</p>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                className="absolute right-2 top-2 text-white"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 flex items-center justify-center mt-3 mb-3 w-full cursor-pointer"
-                    >
-                        {loading ? (
-                            <>
-                                <span className="loader mr-2"></span> Registering...
-                            </>
-                        ) : (
-                            'Register'
-                        )}
-                    </button>
-                </form>
-                <p className="text-white">
-                    Already have an account?{' '}
-                    <Link href="/login" className="text-blue-400">
-                        Login
-                    </Link>
-                </p>
+                        <div className='relative w-full mb-1'>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirm Password"
+                                autoComplete="new-password"
+                                {...register('confirmPassword', {
+                                    required: 'Confirm Password is required',
+                                    validate: (val) =>
+                                        val === watch('password') || 'Passwords do not match',
+                                })}
+                                className="border px-3 py-2 rounded w-full mb-1 text-white bg-transparent"
+                            />
+                            {errors.confirmPassword && (
+                                <p className="text-red-400 text-sm mb-2">
+                                    {errors.confirmPassword.message}
+                                </p>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                className="absolute right-2 top-2 text-white"
+                            >
+                                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 flex items-center justify-center mt-3 mb-3 w-full cursor-pointer"
+                        >
+                            {loading ? (
+                                <>
+                                    <span className="loader mr-2"></span> Registering...
+                                </>
+                            ) : (
+                                'Register'
+                            )}
+                        </button>
+                    </form>
+                    <p className="text-white">
+                        Already have an account?{' '}
+                        <Link href="/login" className="text-blue-400">
+                            Login
+                        </Link>
+                    </p>
+                </div>
             </div>
-        </div>
-    );
+        );
 };
 
 export default RegisterPage;
